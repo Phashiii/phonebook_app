@@ -78,27 +78,28 @@ app.post('/api/persons', (request, response) => {
     const matchingName = contacts.map(contact => contact.name).includes(body.name)
     if(!body.name || !body.number)
     {
-        return response.status(400).json({ 
-            error: 'content missing' 
-        })
+      return response.status(400).json({ 
+          error: 'content missing' 
+      })
     }else if(matchingName)
     {
-        return response.status(400).json({ 
-            error: 'name must be unique' 
-        })
-    }else{
+      return response.status(400).json({ 
+          error: 'name must be unique' 
+      })
+    }
+    const contact = {
+        "id": Math.floor(Math.random() *1000),
+    "name": body.name,
+    "number": body.number
+    }
 
-        const contact = {
-            "id": Math.floor(Math.random() *1000),
-        "name": body.name,
-        "number": body.number
-        }
+    const entries = contacts.concat(contact)
+    contacts = entries
+   
 
-        contacts.concat(contact)
-
-        response.json(contact)
-        }
-
+    response.json(contact)
+    
+    console.log(contacts)
 })
 
 

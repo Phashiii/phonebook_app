@@ -91,11 +91,11 @@ const App = () => {
   const deletePerson = (id, name) =>
   {
     if(window.confirm(`Delete ${name}`)){
-      fetch(`api/persons/${id}`, { method : 'DELETE' })
+      phonebookService.deleteEntry(id)
       phonebookService
       .getAll()
-      .then(personInfo => {
-      setPersons(personInfo)
+      .then(personsInfo =>{
+      setPersons(personsInfo)
       setColor('black')
       setChangeMessage(`${name} has been deleted from phonebook`)
       setTimeout(() =>
