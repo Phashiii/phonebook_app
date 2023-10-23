@@ -91,7 +91,7 @@ const App = () => {
   const deletePerson = (id, name) =>
   {
     if(window.confirm(`Delete ${name}`)){
-      fetch(`http://localhost:3001/persons/${id}`, { method : 'DELETE' })
+      fetch(`api/persons/${id}`, { method : 'DELETE' })
       phonebookService
       .getAll()
       .then(personInfo => {
