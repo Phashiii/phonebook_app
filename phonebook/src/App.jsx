@@ -26,7 +26,6 @@ const App = () => {
     const personObj={
       name: newName,
       number: newNumber,
-      
     }
     const checkName = personsObj => personsObj.name === newName
     const inThere = persons.some(checkName)
@@ -37,32 +36,39 @@ const App = () => {
         .create(personObj)
         .then(personInfo =>{
         setPersons(persons.concat(personInfo))
-        console.log(persons)
         setName('')
         setNumber('')
         setColor('green')
         setChangeMessage(`${newName} has been added to phonebook`)
-        
         setTimeout(() =>{
-        setChangeMessage(null)},5000)
+          setChangeMessage(null)},5000)
+      })
+      .catch((error) => {
+        setName('')
+        setNumber('')
+        setColor('red')
+        setChangeMessage(error.response.data.error)
+        setTimeout(() =>{
+          setChangeMessage(null)},5000)
       })
       }else{
           //When name alrady exists in phonebook
         if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new number?`)){
           const person = persons.find(p => p.name === newName)
           const oldNum = person.number
-          const url= `http://localhost:3001/persons/${person.id}`
           const changedPerson = { ...person, number: newNumber }
 
-          axios
-          .put(url, changedPerson).then(response => {
-            setPersons(persons.map(p => p.name !== newName ? p : response.data))
+          phonebookService
+          .update(person.id, changedPerson)
+          .then(response => {
+            const updatedPersons = persons.map(p => p.name !== newName ? p : changedPerson)
+            setPersons(updatedPersons)
             setColor('yellow')
             setChangeMessage(`${newName} changed number from ${oldNum} to ${newNumber}` )
           })
-          .catch(() => {
+          .catch((error) => {
             setColor('red')
-            setChangeMessage(`${newName} has been deleted` )
+            setChangeMessage(error.response.data.error)
           })
           setTimeout(() =>
             {
@@ -85,8 +91,8 @@ const App = () => {
   const handleSearchChange =(event) =>{
     setSearch(event.target.value)
   }
-
   const filteredList = persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase()))
+  
 
   const deletePerson = (id, name) =>
   {
